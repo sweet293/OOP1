@@ -1,16 +1,13 @@
 package org.utm.labthree;
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
-import java.util.Scanner;
 
-public class InfoManager {
+public class InfoManagerAll {
     private final String folderPath = "C:\\Users\\andre\\OneDrive\\Desktop\\againfolder\\src\\main\\java\\TestFolder";
 
     public void displayAllFileInfo() {

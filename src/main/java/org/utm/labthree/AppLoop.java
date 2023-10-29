@@ -1,6 +1,5 @@
 package org.utm.labthree;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class AppLoop {
@@ -35,13 +34,13 @@ public class AppLoop {
                         String infoChoice = scanner.nextLine();
                         switch (infoChoice) {
                             case "all":
-                                InfoManager infoManager = new InfoManager();
+                                InfoManagerAll infoManager = new InfoManagerAll();
                                 infoManager.displayAllFileInfo();
                                 break;
                             case "<filename>":
-                                System.out.print("Enter the filename: ");
                                 String filename = scanner.nextLine();
-                                System.out.println("Displaying info for " + filename);
+                                InfoManagerSeparate infoManagerSeparate = new InfoManagerSeparate();
+                                infoManagerSeparate.displayFileSeparateInfo(filename);
                                 break;
                             case "b":
                                 infoSubMenu = false;
@@ -64,5 +63,3 @@ public class AppLoop {
             }}
             scanner.close();
         }}
-
-
