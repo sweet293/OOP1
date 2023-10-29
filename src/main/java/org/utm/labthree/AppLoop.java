@@ -3,7 +3,7 @@ package org.utm.labthree;
 import java.util.Scanner;
 
 public class AppLoop {
-
+    private SnapshotManager snapshotManager = new SnapshotManager();
     public void run() {
         boolean exit = false;
         Scanner scanner = new Scanner(System.in);
@@ -52,7 +52,9 @@ public class AppLoop {
                     }
                     break;
                 case "status":
-                    System.out.println("Displaying status...");
+                    StatusManager statusManager = new StatusManager();
+                    String snapshotTime = SnapshotManager.getSnapshotTime();
+                    statusManager.checkStatus(snapshotTime);
                     break;
                 case "exit":
                     exit = true;
