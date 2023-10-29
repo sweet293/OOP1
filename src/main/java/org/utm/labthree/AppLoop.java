@@ -12,10 +12,10 @@ public class AppLoop {
 
         while (!exit) {
             System.out.println("Main Menu:");
-            System.out.println("1. Commit");
-            System.out.println("2. Info");
-            System.out.println("3. Status");
-            System.out.println("4. Exit");
+            System.out.println("Commit");
+            System.out.println("Info");
+            System.out.println("Status");
+            System.out.println("Exit");
             System.out.print("Choose an option: ");
             String choice = scanner.nextLine();
 
@@ -28,21 +28,22 @@ public class AppLoop {
                     boolean infoSubMenu = true;
                     while (infoSubMenu) {
                         System.out.println("Info Menu:");
-                        System.out.println("1. All");
-                        System.out.println("2. <filename>");
-                        System.out.println("3. Back to Main Menu");
+                        System.out.println("all");
+                        System.out.println("<filename>");
+                        System.out.println("b - back to Main Menu");
                         System.out.print("Choose an option: ");
                         String infoChoice = scanner.nextLine();
                         switch (infoChoice) {
                             case "all":
-                                System.out.println("Displaying all info...");
+                                InfoManager infoManager = new InfoManager();
+                                infoManager.displayAllFileInfo();
                                 break;
                             case "<filename>":
                                 System.out.print("Enter the filename: ");
                                 String filename = scanner.nextLine();
                                 System.out.println("Displaying info for " + filename);
                                 break;
-                            case "3":
+                            case "b":
                                 infoSubMenu = false;
                                 break;
                             default:
@@ -54,7 +55,7 @@ public class AppLoop {
                 case "status":
                     System.out.println("Displaying status...");
                     break;
-                case "4":
+                case "exit":
                     exit = true;
                     break;
                 default:
