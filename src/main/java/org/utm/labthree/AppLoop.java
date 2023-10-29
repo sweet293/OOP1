@@ -62,7 +62,6 @@ public class AppLoop {
                     break;
             }}
             scanner.close();
-
         }}
 
 

@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.Scanner;
-
 public class MainClass {
 
     public static void main(String[] args) {
