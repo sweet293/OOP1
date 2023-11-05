@@ -5,40 +5,32 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class InfoManagerAll {
-    private final String folderPath = "C:\\Users\\andre\\OneDrive\\Desktop\\againfolder\\src\\main\\java\\TestFolder";
-
-    public void displayAllFileInfo() {
-        File directory = new File(folderPath);
+    public static void listFilesInfo(String directoryPath) {
+        File directory = new File(directoryPath);
         File[] files = directory.listFiles();
 
         if (files != null) {
             for (File file : files) {
-                if (file.isFile()) {
-                    System.out.println("File Name: " + file.getName());
-                    String prettyPrintExtension = getPrettyPrintExtension(file.getName());
-                    System.out.println("Pretty Print Extension: " + prettyPrintExtension);
-                    System.out.println("Created: " + getCreationTime(file.toPath()));
-                    System.out.println("Last Modified: " + new Date(file.lastModified()));
-                    System.out.println();
-                }
+                System.out.println("File Name: " + file.getName());
+                System.out.println("Pretty Print Extension: " + getPrettyPrintExtension(file.getName()));
+                System.out.println("Created Date: " + getCreationTime(file.toPath()));
+                System.out.println("Updated Date: " + getFormattedDateTime(file.lastModified()));
+                System.out.println();
             }
-        } else {
-            System.out.println("Directory not found or empty.");
         }
     }
 
-    private String getPrettyPrintExtension(String fileName) {
-        int lastDotIndex = fileName.lastIndexOf('.');
-        if (lastDotIndex > 0 && lastDotIndex < fileName.length() - 1) {
-            return fileName.substring(lastDotIndex + 1).toUpperCase();
+    private static String getPrettyPrintExtension(String fileName) {
+        int lastIndex = fileName.lastIndexOf('.');
+        if (lastIndex >= 0 && lastIndex < fileName.length() - 1) {
+            return fileName.substring(lastIndex + 1);
         }
-        return "No extension";
+        return "";
     }
-
-
     public static Date getCreationTime(Path path) {
         try {
             BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
@@ -49,9 +41,9 @@ public class InfoManagerAll {
             return null;
         }
     }
-
-    public static void updateLastModified(File file) {
-        long currentTime = System.currentTimeMillis();
-        file.setLastModified(currentTime);
+    private static String getFormattedDateTime(long timestamp) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(timestamp);
+        return dateFormat.format(date);
     }
 }

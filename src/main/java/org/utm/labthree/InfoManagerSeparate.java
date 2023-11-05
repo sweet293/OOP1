@@ -1,92 +1,103 @@
 package org.utm.labthree;
-import java.io.File;
-import java.io.IOException;
-import java.util.Scanner;
+import java.io.*;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
 
 public class InfoManagerSeparate {
-    private final String folderPath = "C:\\Users\\andre\\OneDrive\\Desktop\\againfolder\\src\\main\\java\\TestFolder";
+    public void getInfoForFile(String filePath) {
+        File file = new File(filePath);
 
-    public void displayFileSeparateInfo(String filename) {
-        File file = new File(folderPath + File.separator + filename);
+        if (file.isFile() && file.exists()) {
+            String fileName = file.getName();
 
-        if (file.exists() && file.isFile()) {
-            String extension = getFileExtension(filename);
-
-            if (extension.equals("txt")) {
-                displayTextFileInfo(file);
-            } else if (extension.equals("png")) {
-                displayImageFileInfo(file);
-            } else if (extension.equals("py")) {
-                displayPythonFileInfo(file);
+            if (isImageFile(fileName)) {
+                getImageInfo(file);
+            } else if (isTextFile(fileName)) {
+                getTextFileInfo(file);
+            } else if (isProgramFile(fileName)) {
+                getProgramFileInfo(file);
             } else {
-                System.out.println("Unsupported file extension: " + extension);
+                System.out.println("Unsupported file type: " + fileName);
             }
         } else {
-            System.out.println("File not found: " + filename);
+            System.out.println("File not found: " + filePath);
         }
     }
 
-    private String getFileExtension(String filename) {
-        int lastDotIndex = filename.lastIndexOf('.');
-        if (lastDotIndex > 0 && lastDotIndex < filename.length() - 1) {
-            return filename.substring(lastDotIndex + 1).toLowerCase();
-        }
-        return "";
+    private boolean isImageFile(String fileName) {
+        return fileName.toLowerCase().endsWith(".jpg") || fileName.toLowerCase().endsWith(".jpeg")
+                || fileName.toLowerCase().endsWith(".png") || fileName.toLowerCase().endsWith(".gif");
     }
 
-    private void displayTextFileInfo(File file) {
+    private boolean isTextFile(String fileName) {
+        return fileName.toLowerCase().endsWith(".txt");
+    }
+
+    private boolean isProgramFile(String fileName) {
+        return fileName.toLowerCase().endsWith(".java") || fileName.toLowerCase().endsWith(".py");
+    }
+
+    private void getImageInfo(File file) {
         try {
-            Scanner scanner = new Scanner(file);
+            BufferedImage image = ImageIO.read(file);
+            int width = image.getWidth();
+            int height = image.getHeight();
+            System.out.println("Image Size: " + width + "x" + height);
+        } catch (IOException e) {
+            System.err.println("Error reading image file: " + e.getMessage());
+        }
+    }
+
+    private void getTextFileInfo(File file) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
             int lineCount = 0;
             int wordCount = 0;
-            int characterCount = 0;
+            int charCount = 0;
 
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
+            String line;
+            while ((line = reader.readLine()) != null) {
                 lineCount++;
-                wordCount += line.split("\\s+").length;
-                characterCount += line.length();
+                String[] words = line.split("\\s+");
+                wordCount += words.length;
+                charCount += line.length();
             }
 
-            System.out.println("Text File Information:");
+            reader.close();
+
             System.out.println("Line Count: " + lineCount);
             System.out.println("Word Count: " + wordCount);
-            System.out.println("Character Count: " + characterCount);
+            System.out.println("Character Count: " + charCount);
         } catch (IOException e) {
-            System.out.println("Error reading the text file: " + e.getMessage());
+            System.err.println("Error reading text file: " + e.getMessage());
         }
     }
 
-    private void displayImageFileInfo(File file) {
-        long fileSize = file.length();
-        System.out.println("Image File Information:");
-        System.out.println("File Size: " + fileSize + " bytes");
-    }
-
-    private void displayPythonFileInfo(File file) {
+    private void getProgramFileInfo(File file) {
         try {
-            Scanner scanner = new Scanner(file);
+            BufferedReader reader = new BufferedReader(new FileReader(file));
             int lineCount = 0;
             int classCount = 0;
             int methodCount = 0;
 
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine().trim();
-
-                if (line.startsWith("class ")) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lineCount++;
+                if (line.contains("class ")) {
                     classCount++;
-                } else if (line.startsWith("def ")) {
+                }
+                if (line.contains("void ") || line.contains(" int ") || line.contains(" double ") || line.contains("def ")) {
                     methodCount++;
                 }
-
-                lineCount++;
             }
 
-            System.out.println("Python File Information:");
+            reader.close();
+
             System.out.println("Line Count: " + lineCount);
             System.out.println("Class Count: " + classCount);
             System.out.println("Method Count: " + methodCount);
         } catch (IOException e) {
-            System.out.println("Error reading the Python file: " + e.getMessage());
+            System.err.println("Error reading program file: " + e.getMessage());
         }
-    }}
+    }
+}

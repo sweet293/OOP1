@@ -3,11 +3,19 @@ package org.utm.labthree;
 import java.util.Scanner;
 
 public class AppLoop {
-    private SnapshotManager snapshotManager = new SnapshotManager();
     public void run() {
         boolean exit = false;
         Scanner scanner = new Scanner(System.in);
         String command = "";
+
+        String snapshotFilePath = "C:\\Users\\andre\\OneDrive\\Desktop\\againfolder\\src\\main\\resources\\snapshot.txt";
+        String targetFolderPath = "C:\\Users\\andre\\OneDrive\\Desktop\\againfolder\\src\\main\\java\\TestFolder";
+
+        SnapshotManager SnapshotManager = new SnapshotManager("C:\\Users\\andre\\OneDrive\\Desktop\\againfolder\\src\\main\\resources\\snapshot.txt");
+        InfoManagerAll InfoManagerAll = new InfoManagerAll();
+        InfoManagerSeparate InfoManagerSeparate = new InfoManagerSeparate();
+        StatusManager statusManager = new StatusManager();
+
 
         while (!exit) {
             System.out.println("Main Menu:");
@@ -20,8 +28,7 @@ public class AppLoop {
 
             switch (choice) {
                 case "commit":
-                    SnapshotManager snapshotManager = new SnapshotManager();
-                    snapshotManager.takeSnapshot();
+                    SnapshotManager.writeSnapshot();
                     break;
                 case "info":
                     boolean infoSubMenu = true;
@@ -34,13 +41,12 @@ public class AppLoop {
                         String infoChoice = scanner.nextLine();
                         switch (infoChoice) {
                             case "all":
-                                InfoManagerAll infoManager = new InfoManagerAll();
-                                infoManager.displayAllFileInfo();
+                                InfoManagerAll.listFilesInfo("C:\\Users\\andre\\OneDrive\\Desktop\\againfolder\\src\\main\\java\\TestFolder");
                                 break;
                             case "<filename>":
+                                System.out.print("Enter the filename: ");
                                 String filename = scanner.nextLine();
-                                InfoManagerSeparate infoManagerSeparate = new InfoManagerSeparate();
-                                infoManagerSeparate.displayFileSeparateInfo(filename);
+                                InfoManagerSeparate.getInfoForFile("C:\\Users\\andre\\OneDrive\\Desktop\\againfolder\\src\\main\\java\\TestFolder\\" + filename);
                                 break;
                             case "b":
                                 infoSubMenu = false;
@@ -52,9 +58,7 @@ public class AppLoop {
                     }
                     break;
                 case "status":
-                    StatusManager statusManager = new StatusManager();
-                    String snapshotTime = SnapshotManager.getSnapshotTime();
-                    statusManager.checkStatus(snapshotTime);
+                    StatusManager.displaySnapshotStatus(snapshotFilePath, targetFolderPath);
                     break;
                 case "exit":
                     exit = true;

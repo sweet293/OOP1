@@ -1,49 +1,62 @@
 package org.utm.labthree;
-import java.io.File;
+import java.io.*;
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class StatusManager {
-    private final String folderPath = "C:\\Users\\andre\\OneDrive\\Desktop\\againfolder\\src\\main\\java\\TestFolder";
-    public void checkStatus(String snapshotTime) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        File folder = new File(folderPath);
-
-        if (folder.exists() && folder.isDirectory()) {
-            checkFolderStatus(folder, snapshotTime, dateFormat);
-        } else {
-            System.out.println("Folder not found: " + folderPath);
-        }
+    public StatusManager() {
     }
 
+    public static void displaySnapshotStatus(String snapshotFilePath, String targetFolderPath) {
+        try {
+            FileReader snapshotFileReader = new FileReader(snapshotFilePath);
+            BufferedReader snapshotBufferedReader = new BufferedReader(snapshotFileReader);
 
-    private void checkFolderStatus(File folder, String snapshotTime, SimpleDateFormat dateFormat) {
-        File[] files = folder.listFiles();
+            System.out.println("Created Snapshot at: ");
+            String snapshotLine = snapshotBufferedReader.readLine();
+            if (snapshotLine != null) {
+                System.out.println(snapshotLine);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date snapshotTime = dateFormat.parse(snapshotLine);
 
-        if (files != null) {
-            for (File file : files) {
-                if (file.isFile()) {
-                    checkFileStatus(file, snapshotTime, dateFormat);
-                } else if (file.isDirectory()) {
-                    checkFolderStatus(file, snapshotTime, dateFormat);
+                File targetFolder = new File(targetFolderPath);
+                if (targetFolder.isDirectory()) {
+                    File[] files = targetFolder.listFiles();
+                    if (files != null) {
+                        List<String> changedFiles = new ArrayList<>();
+                        List<String> notChangedFiles = new ArrayList<>();
+
+                        for (File file : files) {
+                            long lastModified = file.lastModified();
+                            if (lastModified > snapshotTime.getTime()) {
+                                changedFiles.add(file.getName());
+                            } else {
+                                notChangedFiles.add(file.getName());
+                            }
+                        }
+
+
+                        for (String changedFile : changedFiles) {
+                            System.out.println(changedFile + " - Changed");
+                        }
+
+
+                        for (String notChangedFile : notChangedFiles) {
+                            System.out.println(notChangedFile + " - Not Changed");
+                        }
+                    }
                 }
             }
-        }
-        }
 
-
-    private void checkFileStatus(File file, String snapshotTime, SimpleDateFormat dateFormat) {
-        if (snapshotTime == null) {
-            System.out.println(file.getName() + " - Snapshot time not available");
-            return;
-        }
-
-        try {
-            long lastModifiedTime = file.lastModified();
-            boolean changed = lastModifiedTime > Long.parseLong(snapshotTime);
-            String changeStatus = changed ? "Changed" : "Not Changed";
-            System.out.println(file.getName() + " - " + changeStatus);
-        } catch (NumberFormatException e) {
-            System.out.println(file.getName() + " - Invalid snapshot time format");
+            snapshotBufferedReader.close();
+        } catch (IOException e) {
+            System.err.println("An error occurred while reading the file or retrieving file information: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("An error occurred while parsing dates: " + e.getMessage());
         }
     }
 }
